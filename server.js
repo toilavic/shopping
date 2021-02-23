@@ -8,7 +8,6 @@ const loginRouter = require("./controller/login");
 const itemsRouter = require("./controller/items");
 
 const middleware = require("./utils/middleware");
-const logger = require("./utils/logger");
 connectDB();
 
 const app = express();
@@ -31,3 +30,4 @@ app.use(middleware.unknownEndpoint); // handles unkown endpoints
 app.use(middleware.errorHandler); // handles known errors
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
+

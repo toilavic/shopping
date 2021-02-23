@@ -10,41 +10,27 @@ itemsRouter.get("/", async (req, res) => {
   const category = req.query.category;
   const country = req.query.country;
   const city = req.query.city;
-  const maxPrice = req.query.maxPrice;
-  const minPrice = req.query.minPrice;
+  const date = req.query.date; // 'asc' || 'desc'
 
-  const oPrice = req.query.oPrice; // Must be 'asc' or 'desc'
-  const oDate = req.query.oDate; // Must be 'asc' or 'desc'
-
-  let items = await Item.find({}).populate("user", { items: 0 });
+  let items = await Item.find({}).populate("user");
 
   if (category) items = _.filter(items, ["category", category]);
-  if (country) items = _.filter(items, (o) => o.location.country === country);
-  if (city) items = _.filter(items, (o) => o.location.city === city);
-  if (maxPrice) items = _.filter(items, (o) => o.price <= maxPrice);
-  if (minPrice) items = _.filter(items, (o) => o.price >= minPrice);
-
-  if (oPrice) items = _.orderBy(items, ["price"], [oPrice]);
-  if (oDate) items = _.orderBy(items, ["date"], [oDate]);
-
+  if (country) items = _.filter(items, (e) => e.location.country === country);
+  if (city) items = _.filter(items, (e) => e.location.city === city);
+  if (date) items = _.orderBy(items, ["date"], [date]);
   res.json(items);
 });
 
 // add item
 itemsRouter.post(
   "/",
-  middleware.parser.array("image", 4),
   middleware.getToken,
   async (req, res) => {
     const body = req.body;
-
     const decodedToken = jwt.verify(req.token, process.env.SECRET);
-    if (!req.token || !decodedToken.id) {
-      return res.status(401).json({ error: "token missing or invalid" });
-    }
+    if (!req.token || !decodedToken.id) return res.status(401).json({ error: "token missing or invalid" })
 
     const user = await User.findById(decodedToken.id);
-    console.log(user)
     const item = new Item({
       title: body.title,
       description: body.description,
@@ -58,10 +44,9 @@ itemsRouter.post(
       user: user._id,
     });
     const savedItem = await item.save();
-
     user.items = user.items.concat(savedItem._id);
-    await user.save();
 
+    await user.save();
     console.log(savedItem);
     res.json(savedItem);
   }
@@ -69,19 +54,46 @@ itemsRouter.post(
 
 itemsRouter.get("/:id", async (req, res) => {
   const item = await Item.findById(req.params.id);
-  if (item) {
-    res.json(item);
-  } else {
-    res.status(404).end();
-  }
+  item ? res.json(item) : res.status(404).end();
 });
+
+// edit item
+itemsRouter.put(
+  "/:id",
+  middleware.checkImg,
+  middleware.getToken,
+  async (req, res) => {
+    const body = req.body;
+    const decodedToken = jwt.verify(req.token, process.env.SECRET);
+    if (!req.token || !decodedToken.id) return res.status(401).json({ error: "token missing or invalid" });
+
+    const foundItem = await Item.findById(req.params.id);
+    const item = {
+      title: body.title,
+      description: body.description,
+      category: body.category,
+      location: body.location,
+      images: body.images,
+      deliveryType: body.deliveryType,
+      price: body.price,
+      date: new Date(),
+    };
+
+    if (foundItem.user.toString() === decodedToken.id) {
+      const updatedItem = await Item.findByIdAndUpdate(req.params.id, item, {
+        new: true,
+      });
+      res.json(updatedItem);
+    } else {
+      res.status(401).json({ error: "user isn't allowed to edit this item" });
+    }
+  }
+);
 
 // delete
 itemsRouter.delete("/:id", middleware.getToken, async (req, res) => {
   const decodedToken = jwt.verify(req.token, process.env.SECRET);
-  if (!req.token || !decodedToken.id) {
-    return res.status(401).json({ error: "token missing or invalid" });
-  }
+  if (!req.token || !decodedToken.id)  return res.status(401).json({ error: "token missing or invalid" });
 
   const item = await Item.findById(req.params.id);
   if (item === null) res.send("Wrong item ID");
