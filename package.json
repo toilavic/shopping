@@ -7,8 +7,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "deploy": "git push heroku master",
-    "dev": "npm run server",
-    "data:import": "node seederScript.js"
+    "dev": "npm run server"
   },
   "author": "",
   "license": "ISC",
