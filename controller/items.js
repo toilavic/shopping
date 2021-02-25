@@ -1,9 +1,10 @@
 const itemsRouter = require("express").Router();
+const _ = require("lodash");
 const Item = require("../models/products");
 const User = require("../models/user");
+
 const jwt = require("jsonwebtoken");
 const middleware = require("../utils/middleware");
-const _ = require("lodash");
 
 // get item
 itemsRouter.get("/", async (req, res) => {
@@ -12,7 +13,7 @@ itemsRouter.get("/", async (req, res) => {
   const city = req.query.city;
   const date = req.query.date; // 'asc' || 'desc'
 
-  let items = await Item.find({}).populate("user");
+  let items = await Item.find({}).populate("user",{ items: 0 });
 
   if (category) items = _.filter(items, ["category", category]);
   if (country) items = _.filter(items, (e) => e.location.country === country);
@@ -45,7 +46,6 @@ itemsRouter.post(
     });
     const savedItem = await item.save();
     user.items = user.items.concat(savedItem._id);
-
     await user.save();
     console.log(savedItem);
     res.json(savedItem);

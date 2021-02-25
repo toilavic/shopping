@@ -11,6 +11,7 @@ const middleware = require("./utils/middleware");
 connectDB();
 
 const app = express();
+app.use(cors())
 const PORT = process.env.PORT || 5000
 
 app.use(cors());
@@ -21,9 +22,9 @@ app.get("/", (req, res) => {
     res.send("Shopping app");
 });
 
-app.use("/api/users", usersRouter);
-app.use("/api/login", loginRouter);
-app.use("/api/items", itemsRouter);
+app.use("/users", usersRouter);
+app.use("/login", loginRouter);
+app.use("/items", itemsRouter);
 
 
 app.use(middleware.unknownEndpoint); // handles unkown endpoints

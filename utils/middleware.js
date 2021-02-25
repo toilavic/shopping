@@ -12,10 +12,16 @@ const errorHandler = (error, req, res, next) => {
   logger.error(error.message);
 
   if (error.name === "CastError" && error.kind === "ObjectId") return res.status(400).send({ error: "malformatted id" });
-  else if (error.name === "ValidationError") return res.status(400).json({ error: error.message });
   else if (error.name === "JsonWebTokenError") return res.status(401).json({ error: "invalid token" });
+  else if (error.name === "ValidationError") return res.status(400).json({ error: error.message });
   logger.error(error.name);
   next(error);
+};
+
+
+const checkImg = (req, res, next) => {
+  if (req.body.images.length > 4) throw new Error('Too many IMG')
+  else next();
 };
 
 const getToken = (req, res, next) => {
@@ -23,12 +29,6 @@ const getToken = (req, res, next) => {
   if (authorization && authorization.toLowerCase().startsWith("bearer ")) req.token = authorization.substring(7);
   next();
 };
-
-const checkImg = (req, res, next) => {
-  if (req.body.images.length > 4) throw new Error('Too many IMG')
-  else next();
-};
-
 
 module.exports = {
   requestLogger,
