@@ -9,6 +9,9 @@
     "deploy": "git push heroku master",
     "dev": "npm run server"
   },
+  "engines": {
+    "node": "14.x"
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
