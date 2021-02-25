@@ -4,13 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "server": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
     "deploy": "git push heroku master",
-    "dev": "npm run server"
+    "dev": "NODE_ENV=development nodemon index.js",
+    "test": "NODE_ENV=test jest --verbose --runInBand"
   },
   "engines": {
-    "node": "14.x"
+    "node": "10.19.0"
   },
   "author": "",
   "license": "ISC",
