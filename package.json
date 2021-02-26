@@ -7,7 +7,7 @@
     "start": "NODE_ENV=production node server.js",
     "deploy": "git push heroku master",
     "dev": "NODE_ENV=development nodemon index.js",
-    "test": "NODE_ENV=test jest --verbose --runInBand"
+    "test": "mocha"
   },
   "engines": {
     "node": "10.19.0"
@@ -28,6 +28,7 @@
     "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.7"
+    "chai": "^4.3.0",
+    "chai-http": "^4.3.0"
   }
 }
