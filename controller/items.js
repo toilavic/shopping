@@ -53,7 +53,8 @@ itemsRouter.post(
 );
 
 itemsRouter.get("/:id", async (req, res) => {
-  const item = await Item.findById(req.params.id);
+  const item = await Item.find({ user: req.params.id });
+  // user.id = req.params.id
   item ? res.json(item) : res.status(404).end();
 });
 

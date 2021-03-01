@@ -1,4 +1,4 @@
-const Item = require("../models/item");
+const Item = require("../models/products");
 const User = require("../models/user");
 
 const initialItems = [
