@@ -1,0 +1,506 @@
+openapi: 3.0.0
+info:
+  title: Shop
+  version: '1.0'
+  description: A web application API for selling and buying used items
+servers:
+  - url: 'https://stormy-meadow-11036.herokuapp.com/'
+    description: ''
+paths:
+  /users:
+    post:
+      summary: Register
+      operationId: post-user
+      responses:
+        '200':
+          description: User Created
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                  username:
+                    type: string
+                    minLength: 1
+                  name:
+                    type: string
+                    minLength: 1
+                  id:
+                    type: string
+                    minLength: 1
+                required:
+                  - items
+                  - username
+                  - name
+                  - id
+              examples:
+                Example created account:
+                  value:
+                    items: []
+                    username: toilavic2
+                    name: admin
+                    id: 6037c5f42489a52435ec2db9
+        '400':
+          description: Missing Required Information or expected "username" to be unique
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                name:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - name
+                - password
+            examples:
+              Example test user:
+                value:
+                  username: test123
+                  name: test
+                  password: test123
+        description: |+
+
+      description: User registation
+      parameters: []
+    parameters: []
+  /login:
+    post:
+      summary: User login
+      operationId: post-login
+      responses:
+        '200':
+          description: 'Return user''s info and token '
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  token:
+                    type: string
+                    minLength: 1
+                  username:
+                    type: string
+                    minLength: 1
+                  name:
+                    type: string
+                    minLength: 1
+                required:
+                  - token
+                  - username
+                  - name
+              examples:
+                Example return data:
+                  value:
+                    token: >-
+                      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InRvaWxhdmljIiwiaWQiOiI2MDM3YjJkZTI0ODlhNTI0MzVlYzJkYjYiLCJpYXQiOjE2MTQyNjkyNDd9.MYaWU4170tpgNvp368eKx59DGRRbegxX3m-8nkxOtYE
+                    username: toilavic
+                    name: admin
+        '401':
+          description: invalid username or pwd
+      description: User login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                username:
+                  type: string
+                  minLength: 1
+                password:
+                  type: string
+                  minLength: 1
+              required:
+                - username
+                - password
+            examples:
+              example username and pwd:
+                value:
+                  username: admin999
+                  password: admin999
+        description: Username and password
+    parameters: []
+  /items:
+    get:
+      summary: Search items
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemRes'
+              examples:
+                example response data:
+                  value:
+                    images:
+                      - >-
+                        https://images.unsplash.com/photo-1606813907291-d86efa9b94db?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3d%20Ixlib=rb-1.2.1&auto=format&fit=crop&w=1352&q=80
+                      - conchim
+                    title: hello
+                    description: game
+                    category: test
+                    location:
+                      country: vietnam
+                      city: saigon
+                    deliveryType: Pickup
+                    price: 1223
+                    contact: '012878748123'
+                    date: '2021-02-23T21:02:54.037Z'
+                    user:
+                      username: admin
+                      name: Vic
+                      id: 60350060d87cc7b96388abfe
+                    id: 60356d7e5e13a104b69e7e69
+      operationId: get-items
+      description: >-
+        All users (logged and non-logged) should be able to search and list
+        postings based on "category, ,location, date of posting"
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: category
+        - schema:
+            type: string
+          in: query
+          name: country
+        - schema:
+            type: string
+          in: query
+          name: city
+        - schema:
+            type: string
+          in: query
+          name: date
+          description: asc or desc
+    parameters: []
+    post:
+      summary: Post new item
+      operationId: post-items-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                description: ''
+                type: object
+                properties:
+                  images:
+                    type: array
+                    items:
+                      required: []
+                      properties: {}
+                  title:
+                    type: string
+                    minLength: 1
+                  description:
+                    type: string
+                    minLength: 1
+                  category:
+                    type: string
+                    minLength: 1
+                  location:
+                    type: object
+                    properties:
+                      country:
+                        type: string
+                        minLength: 1
+                      city:
+                        type: string
+                        minLength: 1
+                    required:
+                      - country
+                      - city
+                  deliveryType:
+                    type: string
+                    minLength: 1
+                  price:
+                    type: number
+                  contact:
+                    type: string
+                    minLength: 1
+                  date:
+                    type: string
+                    minLength: 1
+                  user:
+                    type: string
+                    minLength: 1
+                  id:
+                    type: string
+                    minLength: 1
+                required:
+                  - images
+                  - title
+                  - description
+                  - category
+                  - location
+                  - deliveryType
+                  - price
+                  - contact
+                  - date
+                  - user
+                  - id
+              examples:
+                example data:
+                  value:
+                    images:
+                      - 2 lua
+                      - conchim
+                    title: hello22229999
+                    description: game
+                    category: test
+                    location:
+                      country: vietnam
+                      city: saigon
+                    deliveryType: Pickup
+                    price: 1223
+                    contact: '012878748123'
+                    date: '2021-02-23T22:25:10.755Z'
+                    user: 60350060d87cc7b96388abfe
+                    id: 603580c60d482522eb419d24
+        '400':
+          description: Item required missing
+        '401':
+          description: |
+            Invalid token
+      security:
+        - JWT token: []
+      description: Post a new item via user account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              description: ''
+              type: object
+              properties:
+                title:
+                  type: string
+                  minLength: 1
+                description:
+                  type: string
+                  minLength: 1
+                category:
+                  type: string
+                  minLength: 1
+                location:
+                  type: object
+                  properties:
+                    country:
+                      type: string
+                      minLength: 1
+                    city:
+                      type: string
+                      minLength: 1
+                  required:
+                    - country
+                    - city
+                price:
+                  type: number
+                images:
+                  type: array
+                  items:
+                    required: []
+                    properties: {}
+                contact:
+                  type: string
+                  minLength: 1
+                deliveryType:
+                  type: string
+                  minLength: 1
+              required:
+                - title
+                - description
+                - category
+                - location
+                - price
+                - images
+                - contact
+                - deliveryType
+  '/items/{id}':
+    parameters:
+      - schema:
+          type: string
+          example: 6035783d5223aa15464aa3df
+        name: id
+        in: path
+        required: true
+        description: id of item
+    put:
+      summary: ''
+      operationId: put-items-id
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/itemRes'
+      description: Edit item by id
+      security:
+        - JWT token: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/itemReq'
+        description: ''
+    delete:
+      summary: Delete Item
+      operationId: delete-items-id
+      responses:
+        '201':
+          description: user not allowed to delete this item
+        '204':
+          description: Deleted
+        '401':
+          description: |
+            token missing or invalid
+      security:
+        - JWT token: []
+      description: ''
+components:
+  schemas:
+    itemReq:
+      description: items responce
+      type: object
+      title: ''
+      properties:
+        images:
+          type: array
+          items:
+            type: object
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          minLength: 1
+        location:
+          type: object
+          required:
+            - country
+            - city
+          properties:
+            country:
+              type: string
+              minLength: 1
+            city:
+              type: string
+              minLength: 1
+        deliveryType:
+          type: string
+          minLength: 1
+        price:
+          type: number
+        contact:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          minLength: 1
+      required:
+        - images
+        - title
+        - description
+        - category
+        - location
+        - deliveryType
+        - price
+        - contact
+        - date
+    itemRes:
+      description: ''
+      type: object
+      properties:
+        images:
+          type: array
+          items:
+            required: []
+            properties: {}
+        title:
+          type: string
+          minLength: 1
+        description:
+          type: string
+          minLength: 1
+        category:
+          type: string
+          minLength: 1
+        location:
+          type: object
+          properties:
+            country:
+              type: string
+              minLength: 1
+            city:
+              type: string
+              minLength: 1
+          required:
+            - country
+            - city
+        deliveryType:
+          type: string
+          minLength: 1
+        price:
+          type: number
+        contact:
+          type: string
+          minLength: 1
+        date:
+          type: string
+          minLength: 1
+        user:
+          type: object
+          properties:
+            username:
+              type: string
+              minLength: 1
+            name:
+              type: string
+              minLength: 1
+            id:
+              type: string
+              minLength: 1
+          required:
+            - username
+            - name
+            - id
+        id:
+          type: string
+          minLength: 1
+      required:
+        - images
+        - title
+        - description
+        - category
+        - location
+        - deliveryType
+        - price
+        - contact
+        - date
+        - user
+        - id
+  securitySchemes:
+    JWT token:
+      type: http
+      scheme: bearer
