@@ -5,6 +5,7 @@ const chai = require('chai');
 const expect = require('chai').expect;
 chai.use(require('chai-http'));
 const server = require('../serverTest');
+require('./helper')
 // const apiAddress = "https://stormy-meadow-11036.herokuapp.com/";
 const apiAddress = "http://localhost:5000/";
 
